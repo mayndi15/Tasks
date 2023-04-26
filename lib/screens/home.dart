@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tasks/data/task_inherited.dart';
+import 'package:tasks/components/task.dart';
+import 'package:tasks/data/task_dao.dart';
 import 'package:tasks/screens/form.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,11 +16,77 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: Container(),
+        actions: [
+          IconButton(
+              onPressed: () {
+                setState(() {});
+              },
+              icon: const Icon(Icons.refresh))
+        ],
         title: const Text('Tasks'),
       ),
-      body: ListView(
+      body: Padding(
         padding: const EdgeInsets.only(top: 8, bottom: 70),
-        children: TaskInherited.of(context).taskList,
+        child: FutureBuilder<List<Task>>(
+            future: TaskDao().findAll(),
+            builder: (context, snapshot) {
+              List<Task>? items = snapshot.data;
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                  return Center(
+                    child: Column(
+                      children: const [
+                        CircularProgressIndicator(),
+                        Text("Loanding")
+                      ],
+                    ),
+                  );
+                case ConnectionState.waiting:
+                  return Center(
+                    child: Column(
+                      children: const [
+                        CircularProgressIndicator(),
+                        Text("Loanding")
+                      ],
+                    ),
+                  );
+                case ConnectionState.active:
+                  return Center(
+                    child: Column(
+                      children: const [
+                        CircularProgressIndicator(),
+                        Text("Loanding")
+                      ],
+                    ),
+                  );
+                case ConnectionState.done:
+                  if (snapshot.hasData && items != null) {
+                    if (items.isNotEmpty) {
+                      return ListView.builder(
+                          itemCount: items.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final Task task = items[index];
+                            return task;
+                          });
+                    }
+                    return Center(
+                      child: Column(
+                        children: const [
+                          Icon(
+                            Icons.error_outline,
+                            size: 128,
+                          ),
+                          Text(
+                            "No task added",
+                            style: TextStyle(fontSize: 32),
+                          )
+                        ],
+                      ),
+                    );
+                  }
+                  return const Text("Not found database");
+              }
+            }),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -30,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 taskContext: context,
               ),
             ),
-          );
+          ).then((value) => setState(() {}));
         },
         child: const Icon(Icons.add),
       ),
