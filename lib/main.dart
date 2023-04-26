@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tasks/screens/screen.dart';
+import 'package:tasks/data/task_inherited.dart';
+import 'package:tasks/screens/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +16,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Screen(),
+      home: TaskInherited(
+        child: const HomeScreen(),
+      ),
     );
   }
 }
