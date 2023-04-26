@@ -18,8 +18,8 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Tasks'),
       ),
       body: ListView(
+        padding: const EdgeInsets.only(top: 8, bottom: 70),
         children: TaskInherited.of(context).taskList,
-        padding: EdgeInsets.only(top: 8, bottom: 70),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
